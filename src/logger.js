@@ -14,7 +14,7 @@ log.error('phrase d'error'');
 
 const fs = require('fs');
 const fsPromises = fs.promises;
-const config = require('./config');
+const config = require('../config');
 const { Console } = require('console');
 
 const log = class {

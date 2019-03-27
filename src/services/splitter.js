@@ -1,4 +1,7 @@
+const config = require('.././config');
 const database = require('../mysql');
+const logger = require('../logger');
+const log = new logger.log();
 
 const models = {
   iphone: /^(?:apple\s+)?(?<model>i\s?-?phone?s?\s?(?:[3-8]{1}\s?g?s?e?\s?(?:plus|\+)?c?|se|x))(?![a-z])/i,
@@ -89,7 +92,7 @@ const model = (model) => {
 
 const idModel = async (data) => {
   const response = [];
-  const mysql = new database();
+  const mysql = new database(config.mysql[process.env.NODE_ENV]);
   for (element of data) {
     if (!element.model) continue;
     element.model = element.model.replace(/\+/g, 'plus');
@@ -162,8 +165,11 @@ const dataFormat = (data) => {
 
 // On fournit un array qui contient tous les objects
 const leboncoin = async (data) => {
+  log.debug('Démarrage du split des données');
   data = await dataFormat(data);
+  log.debug('Données formatées');
   data = await idModel(data);
+  log.debug('Récupération de l\'idModel');
   return data;
 };
 

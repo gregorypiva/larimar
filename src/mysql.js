@@ -1,29 +1,41 @@
 'use strict';
 
 const mysql = require('mysql');
+const logger = require('./logger');
+const log = new logger.log();
 
 module.exports = class Database {
   constructor(config) {
-    this.connection = mysql.createConnection({
-      host            : 'localhost',
-      user            : 'tityus',
-      password        : 'qscpzllmO1@',
-      database        : 'larimar'
-    });
+    this.connection = mysql.createConnection(config);
+  }
 
-    this.connection.connect(function(err) {
-      if (err) {
-        console.error('error connecting: ' + err.stack);
-        return;
-      }
+  connexion() {
+    return new Promise((resolve, reject) => {
+      this.connection.connect(function(e) {
+        log.debug('Début de connexion à la base');
+        if (e) {
+          reject(e);
+        }
+        resolve(true);
+      });
+    });
+  }
+
+  close () {
+    this.connection.end(function(e) {
+      if (e) log.error('0x003 ' + e);
+      log.debug('Fermeture de la connexion Bdd');
     });
   }
 
   query (sql, args) {
     return new Promise ((resolve, reject) => {
-      this.connection.query(sql, (error, results, fields) => {
+      this.connection.query(sql, (e, results, fields) => {
         // Handle error after the release.
-        if (error) throw error;
+        if (e) {
+          log.error('0x002 ' + e);
+          reject()
+        } 
         resolve(results[0] ? results[0].id : null);
       });
     });
@@ -39,12 +51,5 @@ module.exports = class Database {
         } else if (results) console.log(results.insertId);
       });
     }
-  }
-
-  close () {
-    this.connection.end(function(error) {
-      if (error) throw error;
-      // The connection is terminated now
-    });
   }
 };
