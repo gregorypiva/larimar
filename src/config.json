@@ -1,0 +1,8 @@
+{
+  "mode": "PROD",
+  "params": {
+    "category": "telephonie",
+    "page":     1,
+    "maxpage": 1
+  }
+}

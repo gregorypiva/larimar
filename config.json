@@ -1,0 +1,14 @@
+{
+  "mode": "DEV",
+  "params": {
+    "category": "telephonie",
+    "page":     1,
+    "maxpage": 10
+  },
+  "log": {
+    "level": 3,
+    "type": "console",
+    "dir": "./logs/",
+    "name": "log-server"
+  }
+}
