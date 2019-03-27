@@ -4,12 +4,17 @@
   "description": "Larimar Crawler",
   "main": "app.js",
   "scripts": {
-    "test": "SET Node_ENV=DEV& node app"
+    "test": "SET Node_ENV=DEV& node app",
+    "build": "webpack & SET Node_ENV=DEV & node dist/app"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "leboncoin-api": "0.0.35",
     "mysql": "^2.16.0"
+  },
+  "devDependencies": {
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0"
   }
 }

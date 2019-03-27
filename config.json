@@ -2,7 +2,7 @@
   "mode": "DEV",
   "log": {
     "level": 2,
-    "type": "console",
+    "type": "file",
     "dir": "./logs/",
     "name": "log-server"
   },
