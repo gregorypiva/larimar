@@ -11,7 +11,8 @@ module.exports = {
   resolve: {
     alias: {
       framework: path.resolve(__dirname, 'src/services/framework'),
-      config: path.resolve(__dirname, 'config')
+      config: path.resolve(__dirname, 'config'),
+      services: path.resolve(__dirname, 'src/fakeServices/')
     }
   },
   node: {

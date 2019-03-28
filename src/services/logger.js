@@ -1,58 +1,61 @@
 "use strict";
 
 import {config} from 'framework';
-import fs from 'fs';
+const fs = require('fs');
+const fsPromises = require('fs').promises;
 const { Console } = require('console');
 
 const getDirectory = async () => {
   try {
-    await fs.fsPromises.readdir(config.log.dir);
+    await fsPromises.readdir(config.log.dir);
     return true;
   } catch(e) {
-    if(e.code === 'ENOENT') return 'ENOENT';
+    if(e.code === 'ENOENT') createDirectory();
   }
 }
 
 const createDirectory = async () => {
   try {
-    console.log(config.log.dir);
-    await fs.fsPromises.mkdir(config.log.dir, { recursive: true });
+    await fsPromises.mkdir(config.log.dir, { recursive: true });
   } catch(e) {
     throw `Error type=function name=createDirectory : ${e}`;
   }
 }
 
-const sendFile = async (mode, message) => {
+const sendFile = async (mode, args) => {
   const checkDir = await getDirectory();
-  if(checkDir === 'ENOENT') await createDirectory();
   const stdout = fs.createWriteStream(`${config.log.dir}${config.log.name}.log`, {flags: 'a'});
   const logger = new Console({ stdout });
   const date = new Date();
-  logger.log(`${date.toLocaleDateString('fr-FR')} - ${mode} : ${message} \r\n`);
+  logger.log(`${date.toLocaleDateString('fr-FR')} - ${mode} (-) ${args.filename} (-) ${args.code} : ${args.message} \r\n`);
 }
 
-const send = (mode, message) => {
-  if (config.log.type === 'console') console.log(mode, message);
-  if (config.log.type === 'file') sendFile(mode, message);
+const send = (mode, args) => {
+  if (config.log.type === 'console') console.log(`${mode} (-) ${args.filename} (-) ${args.code} : ${args.message}`);
+  if (config.log.type === 'file') sendFile(mode, args);
 }
 
-const error = (message) => {
-  send('ERROR', message);
+const error = (message, filename = 'file?', code = '0x0') => {
+  const args = {message, filename, code};
+  send('ERROR', args);
 }
 
-const warn = (message) => {
+const warn = (message, filename = 'file?', code = '0x0') => {
   if (config.log.level < 1) return;
-  send('WARN', message);
+  const args = {message, filename, code};
+  send('WARN', args);
 }
 
-const debug = (message) => {
+const debug = (message, filename = 'file?', code = '0x0') => {
   if (config.log.level < 2) return;
-  send('DEBUG', message);
+  const args = {message, filename, code};
+  send('DEBUG', args);
 }
 
-const info = (message) => {
+const info = (message, filename = 'file?', code = '0x0') => {
   if (config.log.level < 3) return;
-  send('INFO', message);
+  const args = {message, filename, code};
+  send('INFO', args);
 }
 
 export const logger = {

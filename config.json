@@ -2,18 +2,18 @@
   "mode": "DEV",
   "log": {
     "level": 2,
-    "type": "file",
+    "type": "console",
     "dir": "./logs/",
     "name": "log-server"
   },
   "mysql": {
-    "DEV": {
+    "development": {
       "host"      : "localhost",
       "user"      : "root",
       "password"  : "",
       "database"  : "larimar"
     },
-    "PROD": {
+    "production": {
       "host"      : "localhost",
       "user"      : "tityus",
       "password"  : "qscpzllmO1@",
