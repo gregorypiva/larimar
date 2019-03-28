@@ -17,5 +17,6 @@ module.exports = {
   },
   node: {
     fs: 'empty'
-  }
+  },
+  stats: 'errors-only'
 };

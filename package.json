@@ -5,13 +5,14 @@
   "main": "app.js",
   "scripts": {
     "test": "SET Node_ENV=DEV& node app",
-    "build": "webpack & SET Node_ENV=DEV & node dist/app"
+    "build": "webpack & SET Node_ENV=DEV & node --no-warnings dist/app"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "leboncoin-api": "0.0.35",
-    "mysql": "^2.16.0"
+    "mysql": "^2.16.0",
+    "mysql2": "^1.6.5"
   },
   "devDependencies": {
     "webpack": "^4.29.6",
