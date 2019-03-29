@@ -12,7 +12,7 @@ module.exports = {
     alias: {
       framework: path.resolve(__dirname, 'src/services/framework'),
       config: path.resolve(__dirname, 'config'),
-      services: path.resolve(__dirname, 'src/fakeServices/')
+      services: path.resolve(__dirname, this.mode === 'production' ? 'src/services/' : 'src/fakeServices')
     }
   },
   node: {

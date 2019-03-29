@@ -3,7 +3,6 @@
 import {logger, config, bdd} from 'framework';
 import {crawler} from './services/crawler';
 import splitter from './services/splitter';
-import { exists } from 'fs';
 
 let params = config.params;
 
@@ -12,16 +11,20 @@ const crawl = async () => {
   try {
     let data = await crawler.leboncoin(params);
     data = await splitter.leboncoin(data);
-    await bdd.insert('telephonie', data);
+    const number = await bdd.insert('telephonie', data);
+    logger.debug(`Ajout de ${number} elements`, 'app.js');
   } catch (e) {
-    logger.error(e);
+    logger.error(`app.js : ${e}`, 'app.js');
   }
-
 }
 
 const start = async () => {
   logger.debug('Démarrage de Larimar');
-  await crawl();
+  while (params.page <= params.maxpage) {
+    await crawl();
+    params.page++;
+  }
+  logger.debug('Fin du service');
 }
 
 start();

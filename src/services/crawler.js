@@ -5,7 +5,7 @@ const leboncoin = async (params) => {
     let data = await leboncoinApi(params);
     return Promise.resolve(data);
   } catch (e) {
-    return Promise.reject(e);
+    return Promise.reject(`in crawler.js - parameters [${params}] : ${e}`);
   }
 };
 

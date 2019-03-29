@@ -35,6 +35,13 @@ const send = (mode, args) => {
   if (config.log.type === 'file') sendFile(mode, args);
 }
 
+const write = async (message, filename) => {
+  const checkDir = await getDirectory();
+  const stdout = fs.createWriteStream(`${config.log.dir}${filename}.log`, {flags: 'a'});
+  const logger = new Console({ stdout });
+  logger.log(message);
+}
+
 const error = (message, filename = 'file?', code = '0x0') => {
   const args = {message, filename, code};
   send('ERROR', args);
@@ -62,5 +69,6 @@ export const logger = {
   error,
   warn,
   debug,
-  info
+  info,
+  write
 }

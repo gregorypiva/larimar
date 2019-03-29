@@ -28,6 +28,7 @@ const modelError = `^(?:
   [éeè]cr[a-z]n|
   [[éeè]tui|
   face|
+  fax|
   haut parleur|
   hous?se|
   [kl]it|
@@ -81,10 +82,18 @@ const model = (model) => {
   let regexError = new RegExp(modelError.replace(/[\s\r\n]+/g, ''), 'i');
   for (let regex in models) {
       if (value) break;
-      if (regexError.test(model)) break;
+      if (regexError.test(model)) {
+        logger.write(`Exclusion de : (${model}) \r\n`, config.params.category + '-exclusions');
+        value = 'EREGEX';
+        break;
+      }
       value = model.match(models[regex]);
   }
-  return (value) ? value.groups.model : null;
+  if (value && value !== 'EREGEX') return  value.groups.model;
+  else if (!value) {
+    logger.write(`Pas de correspondance REGEX : (${model}) \r\n`, config.params.category + '-regex');
+    return null;
+  }
 };
 
 const idModel = async (data) => {
@@ -96,13 +105,19 @@ const idModel = async (data) => {
       element.model = element.model.replace(/\s+/g, '');
       const value = await bdd.query(`
       SELECT id FROM model
-      WHERE replace(model, " ", "") = "${element.model}"
-      OR replace(concat(builder, model), " ", "") = "${element.model}"
-      `);
-      element.model = value[0] && value[0].id ? value[0].id : null;
+      WHERE replace(model, " ", "") = ?
+      OR replace(concat(builder, model), " ", "") = ?
+      `, [element.model, element.model]);
+      logger.debug(`Mise en correspondance de : ${element.model}`, 'splitter.js');
+      if (value[0] && value[0].id) {
+        element.model = value[0].id;
+      } else {
+        logger.write(`Pas de correspondance IDMODEL : (${element.model}) \r\n`, config.params.category + '-idmodel');
+        element.model = null;
+      }
       if (element.model) response.push(element);
     } catch (e) {
-      return Promise.reject('in splitter.js : ' + e);
+      return Promise.reject('0x001 ' + e);
     }
   }
   return response;
@@ -145,14 +160,14 @@ const dataFormat = (data) => {
   for (let element of data) {
     const value = {
       id_site: 1,
-      url: element.id || url(element.link),
+      url: `'${element.id}'` || `'${url(element.link)}'`,
       model: model(element.title),
       price:  element.price || null,
       status: status(element.title),
       color:  color(element.title),
       memory: memory(element.title),
-      date:   date(element.date) || null,
-      location:  element.location.city || null,
+      date: `'${date(element.date)}'` || null,
+      location:  `'${element.location.city.replace("'", "\'")}'` || null,
       zipcode:  element.location.zipcode || null,
       latitude: element.location.lat || null,
       longitude:  element.location.lng || null,
@@ -171,7 +186,7 @@ const leboncoin = async (data) => {
     logger.debug('Données formatées', 'splitter.js');
     logger.info(data);
     data = await idModel(data);
-    logger.debug('Récupération de l\'idModel', 'splitter.js');
+    logger.debug('Fin de mise en correspondance des ID', 'splitter.js')
     return Promise.resolve(data);
   } catch (e) {
     return Promise.reject('in splitter.js : ' + e);
