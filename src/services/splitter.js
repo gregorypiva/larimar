@@ -91,14 +91,19 @@ const idModel = async (data) => {
   const response = [];
   for (let element of data) {
     if (!element.model) continue;
-    element.model = element.model.replace(/\+/g, 'plus');
-    element.model = element.model.replace(/\s+/g, '');
-    element.model = await bdd.query(`
-    SELECT id, model FROM model
-    WHERE replace(model, " ", "") = "${element.model}"
-    OR replace(concat(builder, model), " ", "") = "${element.model}"
-    `);
-    if (element.model) response.push(element.model);
+    try {
+      element.model = element.model.replace(/\+/g, 'plus');
+      element.model = element.model.replace(/\s+/g, '');
+      const value = await bdd.query(`
+      SELECT id FROM model
+      WHERE replace(model, " ", "") = "${element.model}"
+      OR replace(concat(builder, model), " ", "") = "${element.model}"
+      `);
+      element.model = value[0] && value[0].id ? value[0].id : null;
+      if (element.model) response.push(element);
+    } catch (e) {
+      return Promise.reject('in splitter.js : ' + e);
+    }
   }
   return response;
 };

@@ -12,8 +12,7 @@ const crawl = async () => {
   try {
     let data = await crawler.leboncoin(params);
     data = await splitter.leboncoin(data);
-    //const data = await bdd.query('select * from telephonie limit 1');
-    console.log(data);
+    await bdd.insert('telephonie', data);
   } catch (e) {
     logger.error(e);
   }
