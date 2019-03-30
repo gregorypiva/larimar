@@ -160,17 +160,17 @@ const dataFormat = (data) => {
   for (let element of data) {
     const value = {
       id_site: 1,
-      url: `'${element.id}'` || `'${url(element.link)}'`,
+      url: `"${element.id}"` || `"${url(element.link)}"`,
       model: model(element.title),
       price:  element.price || null,
       status: status(element.title),
       color:  color(element.title),
       memory: memory(element.title),
-      date: `'${date(element.date)}'` || null,
-      location:  `'${element.location.city.replace("'", "\'")}'` || null,
-      zipcode:  element.location.zipcode || null,
-      latitude: element.location.lat || null,
-      longitude:  element.location.lng || null,
+      date: `"${date(element.date)}"` || "",
+      location:  `"${element.location.city.replace(/"/gi, '\"')}"` || "",
+      zipcode:  element.location.zipcode || "",
+      latitude: element.location.lat || "",
+      longitude:  element.location.lng || "",
       valid: 1,
     }
     if (value.model && value.price) response.push(value);

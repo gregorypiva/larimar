@@ -1,6 +1,6 @@
 {
   "log": {
-    "level": 2,
+    "level": 1,
     "type": "file",
     "dir": "./logs/",
     "name": "log-server"
@@ -10,20 +10,19 @@
       "host"      : "localhost",
       "user"      : "root",
       "password"  : "",
-      "database"  : "larimar",
-      "socketPath": "/var/lib/mysql/mysql.sock"
+      "database"  : "larimar"
     },
     "production": {
       "host"      : "localhost",
-      "user"      : "tityus",
-      "password"  : "qscpzllmO1@",
+      "user"      : "client",
+      "password"  : "",
       "database"  : "larimar",
-      "socketPath": "/var/lib/mysql/mysql.sock"
+      "socketPath": "/var/run/mysqld/mysqld.sock"
     }
   },
   "params": {
     "category": "telephonie",
     "page":     1,
-    "maxpage": 1
+    "maxpage": 10
   }
 }

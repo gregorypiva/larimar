@@ -3,6 +3,7 @@
 import {logger, config, bdd} from 'framework';
 import {crawler} from './services/crawler';
 import splitter from './services/splitter';
+import checker from './services/checker';
 
 let params = config.params;
 
@@ -20,9 +21,14 @@ const crawl = async () => {
 
 const start = async () => {
   logger.debug('Démarrage de Larimar');
-  while (params.page <= params.maxpage) {
-    await crawl();
-    params.page++;
+  // while (params.page <= params.maxpage) {
+  //   await crawl();
+  //   params.page++;
+  // }
+  try {
+    await checker.check();
+  } catch (e) {
+    logger.error(e);
   }
   logger.debug('Fin du service');
 }
